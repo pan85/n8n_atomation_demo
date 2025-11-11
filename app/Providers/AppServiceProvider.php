@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Providers;
+declare(strict_types=1);
+
+namespace N8nAutomation\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use N8nAutomation\Contracts\AdScriptManagerInterface;
+use N8nAutomation\Services\AdScriptManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +15,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $bindings = [
+            AdScriptManagerInterface::class => AdScriptManager::class,
+        ];
+
+        foreach ($bindings as $interface => $implementation) {
+            $this->app->bind($interface, $implementation);
+        }
     }
 
     /**
@@ -20,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+
     }
 }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests\Api;
+namespace N8nAutomation\Http\Requests\Api;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAdScriptTaskRequest extends FormRequest
+class StoreAdScriptRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -25,5 +25,16 @@ class StoreAdScriptTaskRequest extends FormRequest
             'reference_script' => 'required|string',
             'outcome_description' => 'required|string',
         ];
+    }
+
+    public function getReferenceScript(): string
+    {
+        return $this->input('reference_script');
+
+    }
+
+    public function getOutcomeDescription(): string
+    {
+        return $this->input('outcome_description');
     }
 }

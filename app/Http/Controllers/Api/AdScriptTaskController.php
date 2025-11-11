@@ -2,16 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace N8nAutomation\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\StoreAdScriptTaskRequest;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use N8nAutomation\Dtos\AdScriptDto;
+use N8nAutomation\Enums\AdScriptStatus;
+use N8nAutomation\Http\Requests\Api\StoreAdScriptRequest;
+use N8nAutomation\Services\AdScriptManager;
 
-class AdScriptTaskController extends Controller
+class AdScriptTaskController extends AbstractApiController
 {
-    public function store(StoreAdScriptTaskRequest $request)
+    public function __construct(protected readonly AdScriptManager $adScriptTaskManager)
     {
+    }
 
+    public function store(StoreAdScriptRequest $request): JsonResponse
+    {
+        $dto = new AdScriptDto(
+            $request->getReferenceScript(),
+            $request->getOutcomeDescription(),
+            AdScriptStatus::PENDING
+
+        );
+
+        try {
+            $data = $this->adScriptTaskManager->store($dto);
+
+            return $this->successResponse($data, 'Ad script task created successfully');
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
     }
 }
