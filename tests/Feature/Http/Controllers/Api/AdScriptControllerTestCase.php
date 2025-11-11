@@ -10,17 +10,17 @@ use N8nAutomation\Contracts\AdScriptManagerInterface;
 use N8nAutomation\Dtos\AdScriptDto;
 use N8nAutomation\Enums\AdScriptStatus;
 use N8nAutomation\Models\AdScript;
+use N8nAutomation\Services\AdScriptManager;
 use Symfony\Component\HttpFoundation\Response;
-use Tests\Feature\BaseTest;
+use Tests\Feature\BaseTestCase;
 
-class AdScriptControllerTest extends BaseTest
+class AdScriptControllerTestCase extends BaseTestCase
 {
     protected AdScriptManagerInterface $adScriptManager;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->adScriptManager = Mockery::mock(AdScriptManagerInterface::class);
     }
 
     public function testStoreAdScriptSuccessfully(): void
@@ -57,11 +57,14 @@ class AdScriptControllerTest extends BaseTest
             'outcome_description' => 'Test outcome description',
         ];
 
-        $this->app->instance(AdScriptManagerInterface::class, $this->adScriptManager);
-        $this->adScriptManager
+        $adScriptManager = Mockery::mock(AdScriptManagerInterface::class);
+
+        $adScriptManager
             ->expects('store')
             ->with(Mockery::type(AdScriptDto::class))
             ->andThrow(new Exception('Failed to create ad script'));
+
+        $this->app->instance(AdScriptManagerInterface::class, $adScriptManager);
 
         $response = $this->postJson(route('ad-scripts.store'), $requestData, [
             'Authorization' => sprintf('Bearer %s', env('STORE_BEARER_TOKEN')),
@@ -148,6 +151,7 @@ class AdScriptControllerTest extends BaseTest
     {
         $adScript = AdScript::factory()
                             ->setReferenceScript('Test reference script')
+                            ->setStatus(AdScriptStatus::PENDING)
                             ->create();
 
         $requestData = [
@@ -156,10 +160,12 @@ class AdScriptControllerTest extends BaseTest
             'analysis' => 'Test analysis',
         ];
 
-        $this->app->instance(AdScriptManagerInterface::class, $this->adScriptManager);
-        $this->adScriptManager
-            ->expects('storeResult')
+        $adScriptManager = Mockery::mock(AdScriptManager::class)->makePartial();
+        $adScriptManager
+            ->allows('storeResult')
             ->andThrow(new Exception('Failed!!'));
+
+        $this->app->instance(AdScriptManager::class, $adScriptManager);
 
         $response = $this->postJson(route('ad-scripts.results', ['id' => $adScript->getKey()]), $requestData, [
             'Authorization' => sprintf('Bearer %s', env('STORE_BEARER_TOKEN')),
@@ -170,6 +176,7 @@ class AdScriptControllerTest extends BaseTest
         $this->assertDatabaseHas('ad_script_tasks', [
             'new_script' => null,
             'analysis' => null,
+            'error_message' => 'Failed!!',
             'status' => AdScriptStatus::FAILED,
         ]);
     }
