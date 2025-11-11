@@ -18,8 +18,8 @@ class AdScriptFactory extends Factory
     public function definition(): array
     {
         return [
-            'reference_script' => $this->faker->sentences(5),
-            'outcome_description' => $this->faker->sentences(2),
+            'reference_script' => $this->faker->text(),
+            'outcome_description' => $this->faker->text(),
             'new_script' => null,
             'analysis' => null,
             'status' => $this->faker->randomElement(AdScriptStatus::cases()),
