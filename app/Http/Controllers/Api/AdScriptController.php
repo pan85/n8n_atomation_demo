@@ -48,6 +48,7 @@ class AdScriptController extends AbstractApiController
                 $request->getAnalysis()
             );
 
+
             return $this->successResponse($data, 'Ad script task result added successfully');
         } catch (Exception $e) {
             $this->adScriptTaskManager->markAsFailed($adScript, $e->getMessage());
