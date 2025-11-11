@@ -14,7 +14,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('ad_scripts', function (Blueprint $table) {
+        Schema::create('ad_script_tasks', function (Blueprint $table) {
             $table->id();
             $table->mediumText('reference_script');
             $table->text('outcome_description');
@@ -28,7 +28,7 @@ return new class extends Migration {
         // Add check constraint after table creation
         DB::statement(
             sprintf(
-                'ALTER TABLE ad_scripts ADD CONSTRAINT chk_status CHECK (status IN (%s))',
+                'ALTER TABLE ad_script_tasks ADD CONSTRAINT chk_status CHECK (status IN (%s))',
                 join(',', AdScriptStatus::getValues())
             )
         );

@@ -11,7 +11,9 @@ class StoreAdScriptRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return false;
+        $bearer = $this->bearerToken();
+
+        return $bearer === env('STORE_BEARER_TOKEN');
     }
 
     /**
@@ -30,7 +32,6 @@ class StoreAdScriptRequest extends FormRequest
     public function getReferenceScript(): string
     {
         return $this->input('reference_script');
-
     }
 
     public function getOutcomeDescription(): string

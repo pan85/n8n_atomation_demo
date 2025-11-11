@@ -6,14 +6,15 @@ namespace N8nAutomation\Http\Controllers\Api;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
+use N8nAutomation\Contracts\AdScriptManagerInterface;
 use N8nAutomation\Dtos\AdScriptDto;
 use N8nAutomation\Enums\AdScriptStatus;
 use N8nAutomation\Http\Requests\Api\StoreAdScriptRequest;
 use N8nAutomation\Services\AdScriptManager;
 
-class AdScriptTaskController extends AbstractApiController
+class AdScriptController extends AbstractApiController
 {
-    public function __construct(protected readonly AdScriptManager $adScriptTaskManager)
+    public function __construct(protected readonly AdScriptManagerInterface $adScriptTaskManager)
     {
     }
 

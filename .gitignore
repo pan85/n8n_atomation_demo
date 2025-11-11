@@ -164,6 +164,8 @@ bower_components
 .env.*.php
 .env.*
 !.env.example
+!.env.example.testing
 /vendor
 /node_modules
 .env
+/.phpunit.result.cache
