@@ -11,6 +11,7 @@ use N8nAutomation\Dtos\AdScriptDto;
 use N8nAutomation\Enums\AdScriptStatus;
 use N8nAutomation\Http\Requests\Api\AdScriptResultRequest;
 use N8nAutomation\Http\Requests\Api\StoreAdScriptRequest;
+use N8nAutomation\Jobs\SendAdScriptForAnalysisJob;
 use N8nAutomation\Models\AdScript;
 
 class AdScriptController extends AbstractApiController
@@ -30,6 +31,7 @@ class AdScriptController extends AbstractApiController
 
         try {
             $data = $this->adScriptTaskManager->store($dto);
+            dispatch(new SendAdScriptForAnalysisJob($data->getKey()));
 
             return $this->successResponse($data, 'Ad script task created successfully');
         } catch (Exception $e) {
@@ -47,7 +49,6 @@ class AdScriptController extends AbstractApiController
                 $request->getNewScript(),
                 $request->getAnalysis()
             );
-
 
             return $this->successResponse($data, 'Ad script task result added successfully');
         } catch (Exception $e) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -34,5 +36,13 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'n8n_ad_script' => [
+        'base_url' => env('N8N_WEBHOOK_URL', 'http://n8n:5678/'),
+        'webhook_url' => env('N8N_AD_SCRIPT_WEBHOOK_URL', 'http://n8n:5678/webhook/ad-script'),
+        'webhook_username' => env('N8N_AD_SCRIPT_WEBHOOK_USERNAME', 'n8nuser'),
+        'webhook_password' => env('N8N_AD_SCRIPT_WEBHOOK_PASSWORD', 'notSecurePassword'),
+        'retry_after' => env('N8N_AD_SCRIPT_RETRY_AFTER', 1000),
+        'retries' => env('N8N_AD_SCRIPT_RETRIES', 3),
+    ]
 
 ];

@@ -5,16 +5,19 @@ declare(strict_types=1);
 namespace Feature\Http\Controllers\Api;
 
 use Exception;
+use Illuminate\Support\Facades\Queue;
 use Mockery;
 use N8nAutomation\Contracts\AdScriptManagerInterface;
 use N8nAutomation\Dtos\AdScriptDto;
 use N8nAutomation\Enums\AdScriptStatus;
+use N8nAutomation\Jobs\SendAdScriptForAnalysisJob;
 use N8nAutomation\Models\AdScript;
 use N8nAutomation\Services\AdScriptManager;
+use PHPUnit\Util\PHP\Job;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Feature\BaseTestCase;
 
-class AdScriptControllerTestCase extends BaseTestCase
+class AdScriptControllerTest extends BaseTestCase
 {
     protected AdScriptManagerInterface $adScriptManager;
 
@@ -25,6 +28,7 @@ class AdScriptControllerTestCase extends BaseTestCase
 
     public function testStoreAdScriptSuccessfully(): void
     {
+        Queue::fake();
         $requestData = [
             'reference_script' => 'Test reference script',
             'outcome_description' => 'Test outcome description',
@@ -48,6 +52,8 @@ class AdScriptControllerTestCase extends BaseTestCase
             'outcome_description' => $requestData['outcome_description'],
             'status' => AdScriptStatus::PENDING,
         ]);
+
+         Queue::assertPushed(SendAdScriptForAnalysisJob::class);
     }
 
     public function testStoreAdScriptFails(): void

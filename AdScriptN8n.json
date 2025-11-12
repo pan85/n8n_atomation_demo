@@ -1,0 +1,118 @@
+{
+  "name": "AdScript",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "881caba7-59fd-4921-a81f-d821e6a11aa2",
+      "name": "Respond to Webhook",
+      "executeOnce": true,
+      "alwaysOutputData": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Analyse the advertisement script \"{{ $json.body.reference_script }}\" and generate a new script that fulfils the statement \"{{ $json.body.outcome_description }}\". Return JSON format with the structure below and enter a new script in the new_script_value placeholder and summary analysis in analysis_value {\"task_id\": \"{{ $json.body.task_id }}\" , \"new_script\": \"new_script_value,\" \"analysis\": \"analysis_value\"}.\nThe return data should be in plain json only."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "86916e84-5c63-455e-b27d-7d2f0faf8638",
+      "name": "OpenAI prompt manager",
+      "credentials": {
+        "openAiApi": {
+          "id": "bcXvvrZ0Aix7fs19",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ad-script",
+        "authentication": "basicAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2fa421cc-82e1-4610-a484-5195b7de9aa2",
+      "name": "AsScript Input Webhook",
+      "webhookId": "2fba36e3-5989-4e95-8a44-690341aca0bc",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "aaCNKWTTSz7o4ymT",
+          "name": "n8n"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI prompt manager": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AsScript Input Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI prompt manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a32a3540-3ac6-4dde-8ce4-6ccfd04bbe56",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "519a710146f5329876055f7f2e02a932cd97c9d55470c71cab2b137eb7945801"
+  },
+  "id": "MsJNu3HoHOrCa6pX",
+  "tags": []
+}
