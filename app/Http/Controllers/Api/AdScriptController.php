@@ -26,11 +26,11 @@ class AdScriptController extends AbstractApiController
             $request->getReferenceScript(),
             $request->getOutcomeDescription(),
             AdScriptStatus::PENDING
-
         );
 
         try {
             $data = $this->adScriptTaskManager->store($dto);
+
             dispatch(new SendAdScriptForAnalysisJob($data->getKey()));
 
             return $this->successResponse($data, 'Ad script task created successfully');

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use N8nAutomation\Enums\AdScriptStatus;
 use N8nAutomation\Models\AdScript;
 use N8nAutomation\Services\N8nClientService;
+use Throwable;
 
 class SendAdScriptForAnalysisJob implements ShouldQueue
 {
@@ -35,7 +36,7 @@ class SendAdScriptForAnalysisJob implements ShouldQueue
                 throw new Exception(sprintf('AdScript with ID %d not found', $this->id));
             }
             $data = $this->getData($n8nClient);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $data = [
                 'status' => AdScriptStatus::FAILED,
                 'error_message' => $e->getMessage(),
@@ -45,7 +46,7 @@ class SendAdScriptForAnalysisJob implements ShouldQueue
         $this->adScript->update($data);
     }
 
-    public function failed(\Throwable $exception): void
+    public function failed(Throwable $exception): void
     {
         if ($this->adScript && $this->adScript->status !== AdScriptStatus::COMPLETED) {
             $this->adScript->update([
