@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     zip \
-    && pecl install redis \
+    && pecl install redis pcov \
+    && docker-php-ext-enable redis pcov \
     && docker-php-ext-install intl pdo pdo_mysql opcache zip
 
 # Install Composer
